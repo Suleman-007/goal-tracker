@@ -22,3 +22,7 @@
     padding: 60px 20px 20px;
     transition: margin-left 0.3s ease-in-out;
 }
+
+.shiftRight{
+    margin-left: 250px;
+}

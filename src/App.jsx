@@ -9,6 +9,7 @@ import styles from './CSSModules/App.module.css'
 
 function App() {
 
+  const[goals, setGoals] = useState([]); //shared state to hold data
   const[isSidebarVisible, setIsSidebarVisible] = useState(false);
 
   const toggleSidebar = () =>{
@@ -27,10 +28,10 @@ function App() {
         <FaBars />
       </button>
 
-      <div className={styles.mainContent}>
+      <div className={`${styles.mainContent} ${isSidebarVisible ? styles.shiftRight : ""}`}>
      <Routes>
-       <Route path="/" element={<Dashboard/>}/>
-       <Route path="/create-goal" element={<GoalForm/>}/>
+       <Route path="/" element={<Dashboard goals={goals}/>}/>
+       <Route path="/create-goal" element={<GoalForm setGoals={setGoals}/>}/>
        <Route path="/progress" element={<ProgressVisualization/>}/>
      </Routes>
       </div>

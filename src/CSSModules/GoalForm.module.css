@@ -12,13 +12,13 @@
     
 }
 
-h2{
-    font-size: 24px;
-    font-weight: bold;
+h1{
+    font-size: 40px;
+    font-weight: 750;
     color: #333; /*dark grey*/
     margin-bottom: 20px;
     text-align: center;
-    
+    font-family: 'Roboto', sans-serif;
 }
 
 .formGroup{
