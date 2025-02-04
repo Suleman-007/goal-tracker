@@ -1,7 +1,7 @@
-** Time-Based Goal Tracking App
-**
-# Prerequisites
+# Time-Based Goal Tracking App
 
+** Prerequisites
+**
   Before setting up the project, make sure you have the following installed:
 
   • Node.js (Latest LTS) - https://nodejs.org/ (Includes npm)
@@ -10,8 +10,8 @@
 
   • Code Editor (Recommended: VS Code) - https://code.visualstudio.com/
 
-  # Setup Instructions
-
+**   Setup Instructions
+**
 1. Clone the Repository
    
   Run the following command in your terminal:
