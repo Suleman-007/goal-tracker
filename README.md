@@ -1,5 +1,5 @@
-# Time-Based Goal Tracking App
-
+** Time-Based Goal Tracking App
+**
 # Prerequisites
 
   Before setting up the project, make sure you have the following installed:
