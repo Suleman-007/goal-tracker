@@ -1,4 +1,5 @@
 # Time-Based Goal Tracking App
+    A React.js & Vite app that helps users set and track long-term goals (e.g., "150 gym sessions per year"). It allows users to create, update, and monitor progress with a dynamic and     responsive UI, ensuring motivation and accountability
 
 ** Prerequisites **
   Before setting up the project, make sure you have the following installed:
