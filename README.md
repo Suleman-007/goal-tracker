@@ -23,7 +23,9 @@
    cd goal-tracking-app
 
 2. Install Dependencies
+   
    Run the following command to install project dependencies:
+   
    npm install
 
 3. Set Up Environment Variables
@@ -38,11 +40,17 @@
 
 
 4. Start the Development Server
+ 
    Run the following command:
+   
    npm run dev
+   
    The app will be available at `http://localhost:5173/` by default.
 
 5. Build for Production
+
    To generate an optimized production build, run:
+   
    npm run build
+   
    This will create the production-ready files in the `dist/` directory.
