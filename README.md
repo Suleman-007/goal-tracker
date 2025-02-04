@@ -1,8 +1,38 @@
-# React + Vite
+**Time-Based Goal Tracking App**
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Overview
+This is a web application built with React.js and Vite that allows users to set, track, and manage time-based goals efficiently.
 
-Currently, two official plugins are available:
+# Prerequisites
+Before setting up the project, make sure you have the following installed:
+• Node.js (Latest LTS) - https://nodejs.org/ (Includes npm)
+• Git - https://git-scm.com/ (For version control)
+• Code Editor (Recommended: VS Code) - https://code.visualstudio.com/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+#Setup Instructions
+
+1. Clone the Repository
+Run the following command in your terminal:
+git clone https://github.com/your-username/goal-tracking-app.git
+cd goal-tracking-app
+
+2. Install Dependencies
+Run the following command to install project dependencies:
+npm install
+
+3. Set Up Environment Variables
+   i. Create a `.env` file in the root directory.
+   ii. Add the following line to the `.env` file:
+      VITE_API_BASE_URL=https://your-backend-api.com
+   iii. Restart the development server after updating the `.env` file:
+npm run dev
+
+4. Start the Development Server
+Run the following command:
+npm run dev
+The app will be available at `http://localhost:5173/` by default.
+
+5. Build for Production
+To generate an optimized production build, run:
+npm run build
+This will create the production-ready files in the `dist/` directory.
