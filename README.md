@@ -18,7 +18,7 @@
    
    Run the following command in your terminal:
 
-   git clone https://github.com/your-username/goal-tracking-app.git
+   git clone https://github.com/Suleman-007/goal-tracker.git
 
    cd goal-tracking-app
 
