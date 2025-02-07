@@ -9,6 +9,7 @@ function Dashboard({goals}) {
       <p>Welcome to your Goal Tracker!</p>
 
     {/*Display Goals*/}
+    <p>You have <strong>{goals.length}</strong> goals.</p>
 
     <div>
     <h2>Your Goals</h2>

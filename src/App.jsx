@@ -3,9 +3,10 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { FaBars } from "react-icons/fa";
 import Dashboard from './Components/Dashboard'
 import GoalForm from './Components/GoalForm'
-import ProgressVisualization from './Components/ProgressVisualization'
-import Sidebar from './Components/Sidebar';
-import styles from './CSSModules/App.module.css'
+import Progress from './Components/Progress'
+import GoalManager from './Components/GoalManager';
+import Sidebar from './Components/Sidebar'
+import styles from './CSSModules/App.module.css';
 
 function App() {
 
@@ -31,8 +32,9 @@ function App() {
       <div className={`${styles.mainContent} ${isSidebarVisible ? styles.shiftRight : ""}`}>
      <Routes>
        <Route path="/" element={<Dashboard goals={goals}/>}/>
+       <Route path="/GoalManager" element={<GoalManager goals={goals} setGoals={setGoals}/>} />
        <Route path="/create-goal" element={<GoalForm setGoals={setGoals}/>}/>
-       <Route path="/progress" element={<ProgressVisualization/>}/>
+       <Route path="/progress" element={<Progress/>}/>
      </Routes>
       </div>
 

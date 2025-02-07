@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styles from '../CSSModules/GoalForm.module.css';
 
-function GoalForm({setGoals}) {
+function GoalForm({setGoals, handleGoalFormSubmit}) {
 
   const [goal, setGoal] = useState({
     title: "",
@@ -15,6 +15,7 @@ function GoalForm({setGoals}) {
     setGoals((prevGoals) => [...prevGoals, goal]);
     console.log("Goal Submitted", goal);
     setGoal({title: "", targetSession: "", startDate: "", endDate: ""});
+    handleGoalFormSubmit();
   };
 
   return (

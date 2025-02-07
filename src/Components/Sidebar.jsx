@@ -16,6 +16,11 @@ function Sidebar({isVisible, toggleSidebar}) {
         className={({isActive}) => isActive ? `${styles.navLink} ${styles.activeNavLink} ` : styles.navLink}
         >
           Create Goal</NavLink>
+        <NavLink to="GoalManager"
+        className={({isActive}) => isActive ? `${styles.navLink} ${styles.activeNavLink} ` : styles.navLink}
+        >
+          GoalManager
+        </NavLink>
         <NavLink to="/progress" 
         className={({isActive}) => isActive ? `${styles.navLink} ${styles.activeNavLink} ` : styles.navLink}
         >
