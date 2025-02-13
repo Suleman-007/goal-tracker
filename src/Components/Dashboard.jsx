@@ -19,7 +19,7 @@ function Dashboard({goals}) {
       goals.map((goal, index) => (
         <div key={index}>
           <h3>{goal.title}</h3>
-          <p>Target Sessions: {goal.targetSession}</p>
+          <p>Target Sessions: {goal.targetAmount}</p>
           <p>Start Date: {goal.startDate}</p>
           <p>End Date: {goal.endDate}</p>
         </div>
@@ -36,7 +36,7 @@ function Dashboard({goals}) {
         </ul>
       </div>
 
-      <p>Get Started by creating a new goal or check your progress on existing ones!</p>
+      <p>Get Started by creating a new goal or check your GoalProgress on existing ones!</p>
     </div>
   )
 }

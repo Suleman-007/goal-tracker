@@ -1,90 +1,62 @@
-import React, {useState} from 'react'
+import React, { useEffect, useState } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import GoalForm from './GoalForm';
+import GoalList from './GoalList';
+import GoalProgress from './GoalProgress';
 
-function GoalManager({goals, setGoals}) {
-    const [editingIndex, setEditingIndex] = useState(null);
-    const [editGoal, setEditGoal] = useState({
-        title: '',
-        targetSession: '',
-        startDate: '',
-        endDate: ''
-    });
+function GoalManager(props) {
+  console.log("props in goal manager", props)
+  const {goals, setGoals, updateGoal} = props
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editGoal, setEditGoal] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [selectedGoal, setSelectedGoal] = useState(null); // track selected goal for progress logging
 
-    const [showForm, setShowForm] = useState(false);
 
-    // Function to delete goal
-    const deleteGoal = (indexToRemove) => {
-        setGoals(goals.filter((_, index) => index !== indexToRemove));
-    };
 
-    const startEditing = (index) => {
-        setEditingIndex(index);
-        setEditGoal(goals[index]);
-    };
+  const updateGoals = (newGoals) => {
+    setGoals(newGoals);
+    localStorage.setItem("goals", JSON.stringify(newGoals));
+  };
 
-    const updateGoal = () =>{
-        const updateGoals = goals.map((goal, index) =>
-        index === editingIndex ? editGoal : goal
-        );
-        setGoals(updateGoals);
-        setEditingIndex(null);
-    };
-    const handleGoalFormSubmit = () =>{
-        setShowForm(false);
-    }
+  const deleteGoal = (indexToRemove) => {
+    const updatedGoals = goals.filter((_, index) => index !== indexToRemove);
+    updateGoals(updatedGoals);
+  };
+
+  const startEditing = (index) => {
+    setEditingIndex(index);
+    setEditGoal(goals[index]);
+    setShowForm(true);
+  };
+
+  const handleSelectedGoal = (goal) => {
+    setSelectedGoal(goal);
+  };
+
+  const closeForm = () => {
+    setShowForm(false);
+    setEditingIndex(null);
+    setEditGoal(null);
+  };
 
   return (
     <div>
-        <h2>Manage your Goals</h2>
-        <button onClick={() => setShowForm(true)}>Create Goal</button>
+      <h2>Manage your Goals</h2>
+      <button onClick={() => setShowForm(true)}>Create Goal</button>
 
-        {showForm && <GoalForm setGoals={setGoals} handleGoalFormSubmit={handleGoalFormSubmit}/>}
-     <h2>Your Goals</h2>
-    {goals.length === 0 ? (
-      <p>No Goals yet!</p>
-    ) : (
-      goals.map((goal, index) => (
-        <div key={index}>
-            {editingIndex === index ? (
-                <div>
-                  <input
-                  type="text"
-                    value={editGoal.title}
-                    onChange={(e) => setEditGoal({ ...editGoal, title: e.target.value})}
-                    />
-                      <input
-                  type="number"
-                  value={editGoal.targetSession}
-                  onChange={(e) => setEditGoal({ ...editGoal, targetSession: e.target.value })}
-                />
-                  <input
-                  type="date"
-                  value={editGoal.startDate}
-                  onChange={(e) => setEditGoal({ ...editGoal, startDate: e.target.value })}
-                />
-                 <input
-                  type="date"
-                  value={editGoal.endDate}
-                  onChange={(e) => setEditGoal({ ...editGoal, endDate: e.target.value })}
-                />
-                <button onClick={updateGoal}>Save</button>
-                </div>
-            ):(
-            <div>
-          <h3>{goal.title}</h3>
-          <p>Target Sessions: {goal.targetSession}</p>
-          <p>Start Date: {goal.startDate}</p>
-          <p>End Date: {goal.endDate}</p>
-          <button onClick={() => deleteGoal(index)}>Delete</button>
-          <button onClick={() => startEditing(index)}>Edit</button>
-            </div>
-            )}
-        </div>
-      ))
-    )}
+      {showForm && (<GoalForm setGoals={setGoals} closeForm={closeForm} editGoal={editGoal} editIndex={editingIndex} />)}
 
+      <GoalList goals={goals} deleteGoal={deleteGoal} startEditing={startEditing} selectGoal={handleSelectedGoal} selectedGoal={selectedGoal} />
+    
+      {(selectedGoal && updateGoal) ? (
+         <GoalProgress goal={selectedGoal} updateGoal={updateGoal}/>
+       ) : (
+        <p>Select a goal to track progress</p>
+      ) }
+    
     </div>
-  )
+  );
 }
 
-export default GoalManager
+export default GoalManager;
