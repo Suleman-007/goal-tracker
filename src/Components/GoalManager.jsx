@@ -49,11 +49,12 @@ function GoalManager(props) {
 
       <GoalList goals={goals} deleteGoal={deleteGoal} startEditing={startEditing} selectGoal={handleSelectedGoal} selectedGoal={selectedGoal} />
     
-      {(selectedGoal && updateGoal) ? (
-         <GoalProgress goal={selectedGoal} updateGoal={updateGoal}/>
-       ) : (
-        <p>Select a goal to track progress</p>
-      ) }
+     
+    {(selectedGoal && updateGoal) ? (
+             <GoalProgress goal={selectedGoal} updateGoal={updateGoal}/>
+          )  : (
+            <p>Select a goal to track progress</p>
+          ) }
     
     </div>
   );
