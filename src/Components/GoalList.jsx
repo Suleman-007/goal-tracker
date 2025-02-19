@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import GoalProgress from './GoalProgress';
 
-function GoalList({ goals, deleteGoal, startEditing, selectGoal, selectedGoal}) {
+function GoalList({ goals, deleteGoal, startEditing, selectGoal, selectedGoal,updateGoal}) {
  
     const [expandedGoal, setExpandedGoal] = useState(null);
 
@@ -39,6 +39,11 @@ function GoalList({ goals, deleteGoal, startEditing, selectGoal, selectedGoal}) 
       selectGoal(goal);
     }
 
+    const logProgress = (goal) =>{
+      console.log(`Logging progress for goal: ${goal.title}`);
+
+    };
+
   };
   return (
     <div>
@@ -58,20 +63,25 @@ function GoalList({ goals, deleteGoal, startEditing, selectGoal, selectedGoal}) 
           return(
           <div key={goalId} style={{border: '1px solid #ddd', padding:'10px', marginBottom:'10px', borderRadius:'5px'}} >
             
-            <div onClick={() => toggleExpand(goal)} style={{cursor: 'pointer'}}>
             <h3>{goal.title}</h3>
             <p>Type: {goal.goalType === "sessions" ? "Sessions" : "Hours"}</p>
             <p>Target: {goal.targetAmount} {goal.goalType}</p>
+            <p>Progress: {goal.progressPercentage}%</p>
+            <p>Days Left: {goal.daysRemaining}</p>
             <p>Start Date: {goal.startDate}</p>
             <p>End Date: {goal.endDate}</p>
-            </div>
+            
+            <button onClick={(e) => {e.stopPropagation(); logProgress(goal);}}> Log Progress</button>
+            <button onClick={(e) => {e.stopPropagation(); toggleExpand(goal);}}>
+              {expandedGoal === goalId ? "Collapse" : "Expand"}
+            </button>
 
             <button onClick={(e) => {e.stopPropagation(); deleteGoal(index)}}>Delete</button>
             <button onClick={(e) =>{e.stopPropagation(); startEditing(index)}}>Edit</button>
           
           {/*show GoalProgress inline when expanded */}
           
-           {expandedGoal === goalId && selectedGoal?.id === goalId && (<GoalProgress goal={selectedGoal}/>)}
+           {expandedGoal === goalId && selectedGoal?.id === goalId && (<GoalProgress goal={selectedGoal} updateGoal={updateGoal}/>)}
           </div>
         );
       })

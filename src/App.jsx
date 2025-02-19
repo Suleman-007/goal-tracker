@@ -48,10 +48,10 @@ function App() {
 
       <div className={`${styles.mainContent} ${isSidebarVisible ? styles.shiftRight : ""}`}>
      <Routes>
-       <Route path="/" element={<Dashboard goals={goals}/>}/>
+       <Route path="/" element={<Dashboard goals={goals} updateGoal={updateGoal}/>}/>
        <Route path="/GoalManager" element={<GoalManager goals={goals} setGoals={setGoals} updateGoal={updateGoal}/>} />
-       {/* <Route path="/GoalProgress" 
-       element={selectedGoal ? <GoalProgress goal={selectedGoal} updateGoal={updateGoal} /> : <p>No goal selected</p>}/> */}
+       <Route path="/GoalProgress/:goalId" 
+       element={selectedGoal ? <GoalProgress goal={selectedGoal} updateGoal={updateGoal} /> : <p>No goal selected</p>}/> 
      </Routes>
       </div>
 
