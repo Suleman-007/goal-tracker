@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import styles from '../CSSModules/Dashboard.module.css'
 import { GoGoal } from "react-icons/go";
+import {FaEdit, FaTrash, FaPlus} from "react-icons/fa";
 import GoalProgress from './GoalProgress';
+import GoalForm from './GoalForm';
 
-function Dashboard({goals, updateGoal}) {
+function Dashboard() {
+  const [goals, setGoals] =useState([]);
+  const [goalFormOpen, setGoalFormOpen] = useState(false);
+  const [editGoal, setEditGoal] = useState(null);
   // state to track which goal's progress form is open
   const [progressFormOpen, setProgressFormOpen] = useState(null);
-  const [expandedGoal, setExpanededGoal] = useState(null);
+  const [expandedGoal, setExpandedGoal] = useState(null);
 
   // state to hadle showing more goals
   const [showAllGoals, setShowGoals] = useState(false);
@@ -17,6 +22,40 @@ function Dashboard({goals, updateGoal}) {
   // limit number of goals displayed initially
   const displayedGoals = showAllGoals ? goals : goals.slice(0, 4);
 
+  useEffect(() =>{
+    const savedGoals = JSON.parse(localStorage.getItem("goals")) || [];
+    setGoals(savedGoals);
+  }, []);
+
+  // Save goals to local storage whenever they change
+  useEffect(() =>{
+    localStorage.setItem("goals", JSON.stringify(goals));
+  }, [goals]);
+
+  const updateGoals = (updatedGoal) => {
+    setGoals((prevGoals) =>{
+      if(updatedGoal.id && prevGoals.some(goal => goal.id === updatedGoal.id)){
+        // update existing goal
+        return prevGoals.map((goal) => 
+          (goal.id === updatedGoal.id ? updatedGoal : goal));
+          
+        } else {
+        // create new goal
+        return [...prevGoals, { ...updatedGoal, id:Date.now()}];
+      }
+    });
+    setGoalFormOpen(false);
+    setEditGoal(null);
+  };
+
+  const deleteGoal = (goalId) => {
+    if(window.confirm("Are you want to delete this goal?")){
+      const updatedGoals = goals.filter((goal) => goal.id !== goalId);
+      setGoals(updatedGoals);
+      localStorage.setItem("goals", JSON.stringify(updatedGoals));
+    }
+  };
+  
   const calculateDaysRemaining = (goal) => {
     if(!goal.endDate) return'N/A';
 
@@ -75,7 +114,7 @@ function Dashboard({goals, updateGoal}) {
     setGoalProgressData(updatedCompletionPerentage);
   }, [goals]);
   // update goal progress when new progress is logged
-  const handleProgressData = (goalId, completionPercentage, updatedGoal) => {
+  const handleProgressData = (goalId, completionPercentage) => {
     setGoalProgressData((prevData) => ({
       ...prevData,
      [goalId]: completionPercentage,
@@ -87,6 +126,20 @@ function Dashboard({goals, updateGoal}) {
     <div className={styles.dashContainer}>
       <h1>Time-Based Goal Tracker <GoGoal /></h1>
       <p>Welcome to your Goal Tracker!</p>
+
+      {/*Create New Goal Button*/}
+      <button onClick={() =>{ setEditGoal(null); setGoalFormOpen(true)}} className={styles.createGoalBtn}>
+        <FaPlus/> Create New Goal
+      </button>
+
+      {/*Display Goal Form if Open*/}
+      {goalFormOpen && (
+        <GoalForm
+        setGoals={setGoals}
+        closeForm={() => setGoalFormOpen(false)}
+        editGoal={editGoal}
+        />
+      )}
 
     {/*Display Goals*/}
     <p>You have <strong>{goals.length}</strong> goals.</p>
@@ -117,16 +170,13 @@ function Dashboard({goals, updateGoal}) {
           {/* Show Log Progress Form if button is clicked */}
           {progressFormOpen === goal.id && (
            <GoalProgress goal={goal}
-            updateGoal={(updatedGoal) => {
-              updateGoal(updatedGoal);
-              setProgressFormOpen(null);
-            }} 
+            updateGoal={(updateGoals)} 
             hideForm={() => setProgressFormOpen(null)}
             onlyLogForm={true} // New prop to show only the log form
             />
           )}
 
-          <button onClick={() => setExpanededGoal(expandedGoal === goal.id ? null : goal.id)}>
+          <button onClick={() => setExpandedGoal(expandedGoal === goal.id ? null : goal.id)}>
             {expandedGoal === goal.id ? "Hide Progress" : "Show Progress"}
           </button>
 
@@ -134,11 +184,15 @@ function Dashboard({goals, updateGoal}) {
           {expandedGoal === goal.id && (
             <GoalProgress
              goal={goal} 
-             updateGoal={updateGoal} 
+             updateGoal={updateGoals} 
              onlyLogForm={false}
              passProgressData ={handleProgressData}
              />
             )}
+
+            <button onClick={() => {setEditGoal(goal); setGoalFormOpen(true); }}><FaEdit/> Edit </button>
+            <button onClick={() => deleteGoal(goal.id)}><FaTrash/> Delete </button>
+
         </div>
       );
     })}

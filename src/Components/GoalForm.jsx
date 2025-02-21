@@ -46,7 +46,7 @@ function GoalForm({ setGoals, closeForm, editGoal, editIndex }) {
 
   return (
     <div className={styles.container}>
-      <h1>{editIndex !== null ? "Edit Goal" : "Create New Goal"}</h1>
+      <h1>{editGoal ? "Edit Goal" : "Create New Goal"}</h1>
       <form onSubmit={handleSubmit}>
         <div className={styles.formGroup}>
           <label>Title</label>
@@ -76,7 +76,7 @@ function GoalForm({ setGoals, closeForm, editGoal, editIndex }) {
           <input type="date" name="endDate" value={goal.endDate} onChange={handleChange} min={goal.startDate} />
         </div>
 
-        <button className={styles.button} type="submit">{editIndex !== null ? "Update Goal" : "Save Goal"}</button>
+        <button className={styles.button} type="submit">{editGoal ? "Update Goal" : "Save Goal"}</button>
         <button className={styles.button} type="button" onClick={closeForm}>Cancel</button>
       </form>
     </div>
