@@ -1,0 +1,117 @@
+/* Navbar Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Space between logo and nav items */
+    align-items: center; /* Align vertically */
+    background-color: #2c3e50;
+    padding: 1rem 2rem;
+    color: white;
+    position: relative;
+    height: 60px; /* Ensure a fixed height */
+}
+
+/* Logo */
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center; /* Align vertically */
+}
+
+/* Navigation Links Container */
+.navLinks {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    list-style: none;
+    gap: 1.5rem; /* Space between items */
+    padding: 0;
+    margin: 0;
+}
+
+/* Navigation Links */
+.navLinks li {
+    display: flex;
+    align-items: center; /* Ensure links align vertically */
+}
+
+/* Links */
+.navLinks a {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    transition: color 0.3s ease-in-out;
+    display: flex;
+    align-items: center; /* Align text properly */
+    justify-content: center; /* Center text */
+    height: 100%;
+    padding: 10px 15px;
+}
+
+/* Active Link */
+.navLinks a:hover,
+.activeLink {
+    color: #f39c12;
+}
+
+/* Create Goal Button */
+.createGoalBtn {
+    background-color: #f39c12;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+    display: flex;
+    align-items: center; /* Center button text */
+    justify-content: center;
+    height: 40px; /* Ensure consistent height */
+}
+
+.createGoalBtn:hover {
+    background-color: #e67e22;
+}
+
+/* Mobile Menu Toggle */
+.menuToggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Mobile Styles */
+@media screen and (max-width: 768px) {
+    .menuToggle {
+        display: block;
+    }
+
+    .navLinks {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #34495e;
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem 0;
+        display: none;
+    }
+
+    .navLinks.showMenu {
+        display: flex;
+    }
+
+    .navLinks li {
+        margin: 0.5rem 0;
+    }
+
+    .createGoalBtn {
+        width: 100%; /* Full width button */
+        text-align: center;
+    }
+}

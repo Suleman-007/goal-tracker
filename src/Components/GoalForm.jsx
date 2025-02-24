@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import styles from "../CSSModules/GoalForm.module.css";
+import { toast } from "react-toastify"; 
 
 function GoalForm({ setGoals, closeForm, editGoal, editIndex }) {
   const [goal, setGoal] = useState({
@@ -34,8 +35,10 @@ function GoalForm({ setGoals, closeForm, editGoal, editIndex }) {
     setGoals((prevGoals) => {
       if (goal.id){
         // update existing goal based on its ID
+        toast.success("Goal updated successfully!");
         return prevGoals.map((g) => (g.id === goal.id ? goal :g));
       } else {
+        toast.success("New goal created");
         // Create a new goal and assign a unique ID
         return [...prevGoals, {...goal, id: Date.now()}];
       }

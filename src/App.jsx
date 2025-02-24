@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { FaBars } from "react-icons/fa";
 import Dashboard from './Components/Dashboard'
-import GoalForm from './Components/GoalForm'
 import GoalProgress from './Components/GoalProgress'
-import GoalManager from './Components/GoalManager';
-import Sidebar from './Components/Sidebar'
+import Navbar from './Components/Navbar';
 import styles from './CSSModules/App.module.css';
 
 function App() {
@@ -15,15 +13,12 @@ function App() {
     return savedGoals ? JSON.parse(savedGoals) : [];
   }); 
   const [selectedGoal, setSelectedGoal] = useState(null); // track selected goal
-  const[isSidebarVisible, setIsSidebarVisible] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("goals", JSON.stringify(goals));
   }, [goals]);
 
-  const toggleSidebar = () =>{
-    setIsSidebarVisible(!isSidebarVisible);
-  };
+
 
   // update a specific goal's progress
   const updateGoal = (updatedGoal) => {
@@ -39,17 +34,11 @@ function App() {
   return (
     <Router>
       <div className={styles.appContainer}>
-      <Sidebar isVisible={isSidebarVisible} toggleSidebar={toggleSidebar}/>
-      <button className={styles.toggleButton}
-        onClick={toggleSidebar}
-      >
-        <FaBars />
-      </button>
+      <Navbar/>
 
-      <div className={`${styles.mainContent} ${isSidebarVisible ? styles.shiftRight : ""}`}>
+      <div className={styles.mainContent} >
      <Routes>
        <Route path="/" element={<Dashboard goals={goals} updateGoal={updateGoal}/>}/>
-       <Route path="/GoalManager" element={<GoalManager goals={goals} setGoals={setGoals} updateGoal={updateGoal}/>} />
        <Route path="/GoalProgress/:goalId" 
        element={selectedGoal ? <GoalProgress goal={selectedGoal} updateGoal={updateGoal} /> : <p>No goal selected</p>}/> 
      </Routes>

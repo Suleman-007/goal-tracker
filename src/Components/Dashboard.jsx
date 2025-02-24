@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import styles from '../CSSModules/Dashboard.module.css'
 import { GoGoal } from "react-icons/go";
-import {FaEdit, FaTrash, FaPlus} from "react-icons/fa";
+import {FaEdit, FaTrash, FaPlus, FaTimes, FaChevronDown, FaChevronUp} from "react-icons/fa";
 import GoalProgress from './GoalProgress';
 import GoalForm from './GoalForm';
+import { ToastContainer, toast } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css';
 
 function Dashboard() {
   const [goals, setGoals] =useState([]);
@@ -11,6 +13,7 @@ function Dashboard() {
   const [editGoal, setEditGoal] = useState(null);
   // state to track which goal's progress form is open
   const [progressFormOpen, setProgressFormOpen] = useState(null);
+  const [modalGoal, setModalGoal] = useState(null);
   const [expandedGoal, setExpandedGoal] = useState(null);
 
   // state to hadle showing more goals
@@ -32,7 +35,7 @@ function Dashboard() {
     localStorage.setItem("goals", JSON.stringify(goals));
   }, [goals]);
 
-  const updateGoals = (updatedGoal) => {
+  const updateGoals = (updatedGoal, isProgressUpdate = false) => {
     setGoals((prevGoals) =>{
       if(updatedGoal.id && prevGoals.some(goal => goal.id === updatedGoal.id)){
         // update existing goal
@@ -40,10 +43,12 @@ function Dashboard() {
           (goal.id === updatedGoal.id ? updatedGoal : goal));
           
         } else {
+
         // create new goal
         return [...prevGoals, { ...updatedGoal, id:Date.now()}];
       }
     });
+      
     setGoalFormOpen(false);
     setEditGoal(null);
   };
@@ -53,6 +58,7 @@ function Dashboard() {
       const updatedGoals = goals.filter((goal) => goal.id !== goalId);
       setGoals(updatedGoals);
       localStorage.setItem("goals", JSON.stringify(updatedGoals));
+      toast.error("Goal deleted!");
     }
   };
   
@@ -62,25 +68,16 @@ function Dashboard() {
     const end = new Date(goal.endDate);
     let lastProgressDate = null;
     
-    console.log(`Goal: ${goal.title}, End Date:`, end);
-
     if(goal.progressLogs && goal.progressLogs.length > 0) {
-      console.log(`Raw progress logs for ${goal.title}:`, goal.progressLogs);
       const validLogs = goal.progressLogs.filter(log => log.date && !isNaN(new Date(log.date).getTime()));
-      console.log(`validlog are`, validLogs);
       if(validLogs.length > 0){
        validLogs.sort(
          (a, b) => new Date(b.date) - new Date(a.date));
-         console.log(`sorted logs for ${goal.title}`, validLogs.map(log => log.date));
-          const latestLog = validLogs[0];
-          console.log(`latest log for ${goal.title}:`, latestLog);
          lastProgressDate = new Date(validLogs[0].date);
-         console.log(`Goal: ${goal.title}, Last Progress Date after assignment in if statement`, lastProgressDate);
 
     }
   }
 
-  console.log(`Goal: ${goal.title}, Last Progress Date outside if statement`, lastProgressDate);
 
 
   if(!lastProgressDate){
@@ -134,11 +131,16 @@ function Dashboard() {
 
       {/*Display Goal Form if Open*/}
       {goalFormOpen && (
+        <div className={styles.modalBackdrop}>
+          <div className={styles.modalContent}>
         <GoalForm
         setGoals={setGoals}
         closeForm={() => setGoalFormOpen(false)}
         editGoal={editGoal}
         />
+        <button className={styles.closeIcon} onClick={() => setGoalFormOpen(false)}> <FaTimes/> </button>
+        </div>
+        </div>
       )}
 
     {/*Display Goals*/}
@@ -158,37 +160,28 @@ function Dashboard() {
         return (
         <div key={goal.id} className={styles.goalCard}>
           <h3>{goal.title}</h3>
-          <p>Target Sessions: {goal.targetAmount}</p>
+          <p>Target {goal.goalType === 'sessions' ? 'Sessions' : 'Hours'}: {goal.targetAmount}</p>
           <p>Progress: {completionPercentage !== undefined ? completionPercentage.toFixed(1) : 'N/A'}%</p>
           <p>Days Remaining: {daysRemaining !== undefined ? daysRemaining : 'N/A'} days</p>
           
           {/*Log Progress Button*/}
           <button onClick={() => setProgressFormOpen(progressFormOpen === goal.id ? null : goal.id)}>
-            {progressFormOpen === goal.id ? "Cancel" : "Log Progress"}
+            {progressFormOpen === goal.id ? <FaChevronUp/> : <FaChevronDown/>} Log Progress
           </button>
 
-          {/* Show Log Progress Form if button is clicked */}
+          {/* Show Log Progress Form if open */}
           {progressFormOpen === goal.id && (
            <GoalProgress goal={goal}
-            updateGoal={(updateGoals)} 
+            updateGoal={(updatedGoal) => updateGoals(updatedGoal, true)} 
             hideForm={() => setProgressFormOpen(null)}
             onlyLogForm={true} // New prop to show only the log form
             />
           )}
 
-          <button onClick={() => setExpandedGoal(expandedGoal === goal.id ? null : goal.id)}>
-            {expandedGoal === goal.id ? "Hide Progress" : "Show Progress"}
+          {/*show progress button (opens modal)*/}
+          <button onClick={() => setModalGoal(goal)}>
+            Show Progress
           </button>
-
-          {/*Show Progress Graph and History separately*/}
-          {expandedGoal === goal.id && (
-            <GoalProgress
-             goal={goal} 
-             updateGoal={updateGoals} 
-             onlyLogForm={false}
-             passProgressData ={handleProgressData}
-             />
-            )}
 
             <button onClick={() => {setEditGoal(goal); setGoalFormOpen(true); }}><FaEdit/> Edit </button>
             <button onClick={() => deleteGoal(goal.id)}><FaTrash/> Delete </button>
@@ -210,6 +203,22 @@ function Dashboard() {
         </button>
       )}
 
+      {/* Modal for showing progress graph & history */}
+      {modalGoal && (
+        <div className={styles.modalBackdrop}>
+          <div className={styles.modalContent}>
+            <GoalProgress
+            goal={modalGoal}
+            updateGoal={updateGoals}
+            onlyLogForm={false}
+            />
+            <button className={styles.closeIcon} onClick={() => setModalGoal(null)}>
+              <FaTimes/>
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className={styles.guideBar}>
       <p> Use this sidebar to:</p>
         <ul>
@@ -219,8 +228,9 @@ function Dashboard() {
       </div>
 
       <p>Get Started by creating a new goal or check your GoalProgress on existing ones!</p>
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} closeOnClick pauseOnHover draggable/>
     </div>
-  )
+  );
 }
 
 export default Dashboard
