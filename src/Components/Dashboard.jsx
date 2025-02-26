@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import styles from '../CSSModules/Dashboard.module.css'
 import { GoGoal } from "react-icons/go";
-import {FaEdit, FaTrash, FaPlus, FaTimes, FaChevronDown, FaChevronUp} from "react-icons/fa";
+import {FaEdit, FaTrash, FaPlus, FaTimes, FaChevronDown, FaChevronUp, FaBullseye, FaChartBar, FaClock} from "react-icons/fa";
 import GoalProgress from './GoalProgress';
 import GoalForm from './GoalForm';
 import { ToastContainer, toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css';
 
-function Dashboard() {
+function Dashboard({goalFormOpen, setGoalFormOpen}) {
   const [goals, setGoals] =useState([]);
-  const [goalFormOpen, setGoalFormOpen] = useState(false);
   const [editGoal, setEditGoal] = useState(null);
   // state to track which goal's progress form is open
   const [progressFormOpen, setProgressFormOpen] = useState(null);
@@ -125,7 +124,7 @@ function Dashboard() {
       <p>Welcome to your Goal Tracker!</p>
 
       {/*Create New Goal Button*/}
-      <button onClick={() =>{ setEditGoal(null); setGoalFormOpen(true)}} className={styles.createGoalBtn}>
+      <button className={styles.primaryBtn} onClick={() =>{ setEditGoal(null); setGoalFormOpen(true)}} >
         <FaPlus/> Create New Goal
       </button>
 
@@ -144,10 +143,9 @@ function Dashboard() {
       )}
 
     {/*Display Goals*/}
-    <p>You have <strong>{goals.length}</strong> goals.</p>
-
     <div>
     <h2>Your Goals</h2>
+    <p>You have <strong>{goals.length}</strong> goals.</p>
     {goals.length === 0 ? (
       <p>No Goals yet!</p>
     ) : (
@@ -160,12 +158,29 @@ function Dashboard() {
         return (
         <div key={goal.id} className={styles.goalCard}>
           <h3>{goal.title}</h3>
-          <p>Target {goal.goalType === 'sessions' ? 'Sessions' : 'Hours'}: {goal.targetAmount}</p>
-          <p>Progress: {completionPercentage !== undefined ? completionPercentage.toFixed(1) : 'N/A'}%</p>
-          <p>Days Remaining: {daysRemaining !== undefined ? daysRemaining : 'N/A'} days</p>
+          <div className={styles.actionIcons}>
+          <FaEdit className={styles.eitIcon} onClick={() => {setEditGoal(goal); setGoalFormOpen(true); }}/>
+          <FaTrash className={styles.deleteIcon} onClick={() => deleteGoal(goal.id)}/>
+          </div>
           
+          <div className={styles.infoContainer}>
+            <div className={`${styles.infoBadge} ${styles.targetBadge}`}>
+            <FaBullseye/>
+            <span>Target {goal.goalType === 'sessions' ? 'Sessions' : 'Hours'}: {goal.targetAmount}</span>
+            </div>
+
+          <div className={`${ styles.infoBadge} ${styles.progressBadge}`}>
+            <FaChartBar/>
+            Progress: {completionPercentage !== undefined ? completionPercentage.toFixed(1) : 'N/A'}%
+            </div>
+
+          <div className={`${styles.infoBadge} ${styles.daysBadge}`}>
+            <FaClock/>
+            Days Remaining: {daysRemaining !== undefined ? daysRemaining : 'N/A'} days
+            </div>
+          </div>
           {/*Log Progress Button*/}
-          <button onClick={() => setProgressFormOpen(progressFormOpen === goal.id ? null : goal.id)}>
+          <button className={styles.secondaryBtn} onClick={() => setProgressFormOpen(progressFormOpen === goal.id ? null : goal.id)}>
             {progressFormOpen === goal.id ? <FaChevronUp/> : <FaChevronDown/>} Log Progress
           </button>
 
@@ -179,12 +194,9 @@ function Dashboard() {
           )}
 
           {/*show progress button (opens modal)*/}
-          <button onClick={() => setModalGoal(goal)}>
+          <button className={styles.primaryBtn}onClick={() => setModalGoal(goal)}>
             Show Progress
           </button>
-
-            <button onClick={() => {setEditGoal(goal); setGoalFormOpen(true); }}><FaEdit/> Edit </button>
-            <button onClick={() => deleteGoal(goal.id)}><FaTrash/> Delete </button>
 
         </div>
       );

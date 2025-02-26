@@ -14,6 +14,7 @@ function App() {
   }); 
   const [selectedGoal, setSelectedGoal] = useState(null); // track selected goal
 
+  const [goalFormOpen, setGoalFormOpen] = useState(false);
   useEffect(() => {
     localStorage.setItem("goals", JSON.stringify(goals));
   }, [goals]);
@@ -34,13 +35,11 @@ function App() {
   return (
     <Router>
       <div className={styles.appContainer}>
-      <Navbar/>
+      <Navbar onCreateGoal={() => setGoalFormOpen(true)}/>
 
       <div className={styles.mainContent} >
      <Routes>
-       <Route path="/" element={<Dashboard goals={goals} updateGoal={updateGoal}/>}/>
-       <Route path="/GoalProgress/:goalId" 
-       element={selectedGoal ? <GoalProgress goal={selectedGoal} updateGoal={updateGoal} /> : <p>No goal selected</p>}/> 
+       <Route path="/" element={<Dashboard goalFormOpen={goalFormOpen} setGoalFormOpen={setGoalFormOpen} goals={goals} updateGoal={updateGoal}/>}/>
      </Routes>
       </div>
 

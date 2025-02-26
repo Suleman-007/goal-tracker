@@ -3,7 +3,7 @@ import {NavLink} from 'react-router-dom';
 import {FaBars, FaTimes} from 'react-icons/fa';
 import styles from '../CSSModules/Navbar.module.css';
 
-function Navbar() {
+function Navbar({onCreateGoal}) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const toggleMobileMenu = () => {
         setMobileMenuOpen((prev) => !prev);
@@ -36,7 +36,7 @@ function Navbar() {
                 </li>
 
                 <li>
-                    <button className={styles.createGoalBtn}> Create Goal </button>
+                    <button className={styles.createGoalBtn} onClick={onCreateGoal}> Create Goal </button>
                 </li>
             </ul>
 

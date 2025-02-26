@@ -78,9 +78,10 @@ function GoalForm({ setGoals, closeForm, editGoal, editIndex }) {
           <label>End Date</label>
           <input type="date" name="endDate" value={goal.endDate} onChange={handleChange} min={goal.startDate} />
         </div>
-
-        <button className={styles.button} type="submit">{editGoal ? "Update Goal" : "Save Goal"}</button>
-        <button className={styles.button} type="button" onClick={closeForm}>Cancel</button>
+         <div className={styles.buttonGroup}>
+        <button className={styles.saveButton} type="submit">{editGoal ? "Update Goal" : "Save Goal"}</button>
+        <button className={styles.cancelButton} type="button" onClick={closeForm}>Cancel</button>
+        </div>
       </form>
     </div>
   );

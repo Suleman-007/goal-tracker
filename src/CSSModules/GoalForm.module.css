@@ -12,9 +12,27 @@
     
 }
 
+select {
+    padding: 10px; /* Same as input fields */
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    height: 42px; /* Ensure it matches input fields */
+    background-color: #fff;
+    cursor: pointer;
+}
+
+select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);
+}
+
 h1{
-    font-size: 40px;
-    font-weight: 750;
+    font-size: 32px;
+    font-weight: bold;
     color: #333; /*dark grey*/
     margin-bottom: 20px;
     text-align: center;
@@ -24,7 +42,7 @@ h1{
 .formGroup{
     display: flex;
     flex-direction: column;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     width: 100%;
 }
 
@@ -32,6 +50,7 @@ label{
     font-size: 16px;
     color: #555;/*medium grey*/
     margin-bottom: 5px;
+    text-align: left;
 }
 
 input{
@@ -50,19 +69,39 @@ input:focus{
     box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);/* Soft Gloe Effect*/
 }
 
-.button{
-    padding: 10px 20px; /* vertical and horizontal padding*/
-    font-size: 16px;
-    font-weight: bold;
-    color:#fff; /* white text color*/
-    background-color: #007bff;
-    border:none;
-    border-radius: 5px;
-    cursor:pointer;/* show pointer cursor on hover*/
-    transition: background-color 0.3s ease; /*smooth hover effect*/
-
+.buttonGroup {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
 }
 
-.button:hover{
+.saveButton, .cancelButton {
+    flex: 1; /* Makes both buttons take equal width */
+    padding: 12px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.saveButton {
+    margin-right: 10px;
+    color: #fff;
+    background-color: #007bff;
+}
+
+.saveButton:hover {
     background-color: #0056b3;
-} 
+}
+
+.cancelButton {
+    color: #333;
+    background-color: #ddd;
+}
+
+.cancelButton:hover {
+    background-color: #bbb;
+}

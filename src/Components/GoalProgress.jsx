@@ -3,7 +3,7 @@ import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, registerables } from "chart.js";
 ChartJS.register(...registerables); 
 import 'chartjs-adapter-date-fns';  
-
+import styles from '../CSSModules/Dashboard.module.css'
 
 function GoalProgress({ ...props}) {
   console.log("Received props in GoalProgress:", props);
@@ -128,21 +128,20 @@ const handleSubmit = (e) => {
     <div>
       {/* Log Progress Form (Only when onlyLogForm is true) */}
     {onlyLogForm ? (
-    <div>
+    <div className={styles.logProgressForm}>
       <h3>Log Progress for {goal.title}</h3>
       <form onSubmit={handleSubmit}>
         <label>Date:</label>
         <input type="date" name="date" value={logEntry.date} onChange={handleChange} />
 
-        <label>Amount</label>
+        <label>Amount:</label>
         <input type="number" name="amount" value={logEntry.amount} onChange={handleChange} required />
 
         <label>Note:</label>
         <input type="text" name="note" value={logEntry.note} onChange={handleChange} />
-
-        <button type="Submit">Add Log</button>
-        <button type="button" onClick={hideForm}>Close</button>
-
+        <div className={styles.addLogBtnContainer}>
+        <button className={styles.addLogBtn} type="Submit">Add Log</button>
+        </div>
       </form>
       </div>
     ) : (
