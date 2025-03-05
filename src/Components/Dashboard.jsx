@@ -1,24 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import styles from '../CSSModules/Dashboard.module.css'
 import { GoGoal } from "react-icons/go";
-import {FaEdit, FaTrash, FaPlus, FaTimes, FaChevronDown, FaChevronUp, FaBullseye, FaChartBar, FaClock} from "react-icons/fa";
+import {FaEdit, FaTrash, FaPlus, FaBullseye, FaChartBar, FaRegClock} from "react-icons/fa";
 import GoalProgress from './GoalProgress';
 import GoalForm from './GoalForm';
 import { ToastContainer, toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css';
 
+
 function Dashboard({goalFormOpen, setGoalFormOpen}) {
   const [goals, setGoals] =useState([]);
   const [editGoal, setEditGoal] = useState(null);
-  // state to track which goal's progress form is open
-  const [progressFormOpen, setProgressFormOpen] = useState(null);
   const [modalGoal, setModalGoal] = useState(null);
-  const [expandedGoal, setExpandedGoal] = useState(null);
-
-  // state to hadle showing more goals
+  const [logProgressGoal, setLogProgressGoal] = useState(null);
   const [showAllGoals, setShowGoals] = useState(false);
-
-  // store completion percentage and days remaining for each goal
   const [goalProgressData, setGoalProgressData] = useState({});
 
   // limit number of goals displayed initially
@@ -34,7 +29,7 @@ function Dashboard({goalFormOpen, setGoalFormOpen}) {
     localStorage.setItem("goals", JSON.stringify(goals));
   }, [goals]);
 
-  const updateGoals = (updatedGoal, isProgressUpdate = false) => {
+  const updateGoals = (updatedGoal) => {
     setGoals((prevGoals) =>{
       if(updatedGoal.id && prevGoals.some(goal => goal.id === updatedGoal.id)){
         // update existing goal
@@ -120,15 +115,15 @@ function Dashboard({goalFormOpen, setGoalFormOpen}) {
 
   return (
     <div className={styles.dashContainer}>
-      <h1>Time-Based Goal Tracker <GoGoal /></h1>
-      <p>Welcome to your Goal Tracker!</p>
 
-      {/*Create New Goal Button*/}
-      <button className={styles.primaryBtn} onClick={() =>{ setEditGoal(null); setGoalFormOpen(true)}} >
+      <h1>Welcome to your Goal Tracker!<GoGoal/></h1>
+
+      {/* Create New Goal Button
+      <button className={styles.createGoalBtn} onClick={() =>{ setEditGoal(null); setGoalFormOpen(true)}} >
         <FaPlus/> Create New Goal
-      </button>
+      </button> */}
 
-      {/*Display Goal Form if Open*/}
+      {/*Goal Form Modal*/}
       {goalFormOpen && (
         <div className={styles.modalBackdrop}>
           <div className={styles.modalContent}>
@@ -137,7 +132,6 @@ function Dashboard({goalFormOpen, setGoalFormOpen}) {
         closeForm={() => setGoalFormOpen(false)}
         editGoal={editGoal}
         />
-        <button className={styles.closeIcon} onClick={() => setGoalFormOpen(false)}> <FaTimes/> </button>
         </div>
         </div>
       )}
@@ -157,10 +151,12 @@ function Dashboard({goalFormOpen, setGoalFormOpen}) {
 
         return (
         <div key={goal.id} className={styles.goalCard}>
-          <h3>{goal.title}</h3>
+          <div className={styles.goalHeader}>
+          <h3 className={styles.goalTitle}>{goal.title}</h3>
           <div className={styles.actionIcons}>
-          <FaEdit className={styles.eitIcon} onClick={() => {setEditGoal(goal); setGoalFormOpen(true); }}/>
+          <FaEdit className={styles.editIcon} onClick={() => {setEditGoal(goal); setGoalFormOpen(true); }}/>
           <FaTrash className={styles.deleteIcon} onClick={() => deleteGoal(goal.id)}/>
+          </div>
           </div>
           
           <div className={styles.infoContainer}>
@@ -175,24 +171,16 @@ function Dashboard({goalFormOpen, setGoalFormOpen}) {
             </div>
 
           <div className={`${styles.infoBadge} ${styles.daysBadge}`}>
-            <FaClock/>
+            <FaRegClock/>
             Days Remaining: {daysRemaining !== undefined ? daysRemaining : 'N/A'} days
             </div>
           </div>
-          {/*Log Progress Button*/}
-          <button className={styles.secondaryBtn} onClick={() => setProgressFormOpen(progressFormOpen === goal.id ? null : goal.id)}>
-            {progressFormOpen === goal.id ? <FaChevronUp/> : <FaChevronDown/>} Log Progress
+          {/*Log Progress Modal*/}
+          <button className={styles.secondaryBtn} onClick={() => setLogProgressGoal(goal)}>
+            Log Progress
           </button>
 
-          {/* Show Log Progress Form if open */}
-          {progressFormOpen === goal.id && (
-           <GoalProgress goal={goal}
-            updateGoal={(updatedGoal) => updateGoals(updatedGoal, true)} 
-            hideForm={() => setProgressFormOpen(null)}
-            onlyLogForm={true} // New prop to show only the log form
-            />
-          )}
-
+        
           {/*show progress button (opens modal)*/}
           <button className={styles.primaryBtn}onClick={() => setModalGoal(goal)}>
             Show Progress
@@ -215,24 +203,32 @@ function Dashboard({goalFormOpen, setGoalFormOpen}) {
         </button>
       )}
 
+      {/*Modal for Logging Progress*/}
+      {logProgressGoal && (
+        <div className={styles.modalBackdrop} onClick={() => setLogProgressGoal(null)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <GoalProgress goal={logProgressGoal} updateGoal={updateGoals} hideForm={() => setLogProgressGoal(null)} onlyLogForm={true}/>
+          </div>
+        </div>
+      )}
+
       {/* Modal for showing progress graph & history */}
       {modalGoal && (
-        <div className={styles.modalBackdrop}>
-          <div className={styles.modalContent}>
+        <div className={styles.modalBackdrop} onClick={() => setModalGoal(null)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <GoalProgress
             goal={modalGoal}
             updateGoal={updateGoals}
+            hideForm={() => setModalGoal(null)}
             onlyLogForm={false}
             />
-            <button className={styles.closeIcon} onClick={() => setModalGoal(null)}>
-              <FaTimes/>
-            </button>
+            
           </div>
         </div>
       )}
 
       <div className={styles.guideBar}>
-      <p> Use this sidebar to:</p>
+      <p> Use the Navbar to:</p>
         <ul>
           <li>Create new goals</li>
           <li>View and track your existing goals</li>

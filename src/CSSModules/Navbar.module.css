@@ -1,38 +1,40 @@
 /* Navbar Styles */
 .navbar {
     display: flex;
-    justify-content: space-between; /* Space between logo and nav items */
-    align-items: center; /* Align vertically */
+    justify-content: space-between; 
+    align-items: center; 
     background-color: #2c3e50;
     padding: 1rem 2rem;
     color: white;
     position: relative;
-    height: 60px; /* Ensure a fixed height */
+    height: 60px; 
+    font-family: 'Poppins', sans-serif;
+    
 }
 
-/* Logo */
 .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 1.7rem;
+    font-weight: 600;
     display: flex;
-    align-items: center; /* Align vertically */
+    align-items: center; 
 }
 
 /* Navigation Links Container */
 .navLinks {
     display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
+    justify-content: center; 
+    align-items: center; 
     list-style: none;
-    gap: 1.5rem; /* Space between items */
+    gap: 1.5rem; 
     padding: 0;
     margin: 0;
+    transition: all 0.3s ease-in-out;
 }
 
 /* Navigation Links */
 .navLinks li {
     display: flex;
-    align-items: center; /* Ensure links align vertically */
+    align-items: center; 
 }
 
 /* Links */
@@ -40,18 +42,19 @@
     text-decoration: none;
     color: white;
     font-size: 1rem;
+    font-weight: 500;
     transition: color 0.3s ease-in-out;
     display: flex;
-    align-items: center; /* Align text properly */
-    justify-content: center; /* Center text */
+    align-items: center; 
+    justify-content: center; 
     height: 100%;
     padding: 10px 15px;
 }
 
-/* Active Link */
 .navLinks a:hover,
 .activeLink {
     color: #f39c12;
+    font-weight: 600;
 }
 
 /* Create Goal Button */
@@ -61,17 +64,21 @@
     border: none;
     padding: 0.5rem 1rem;
     font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
     border-radius: 5px;
     cursor: pointer;
-    transition: background 0.3s ease-in-out;
+    transition: background 0.3s ease-in-out transform 0.2s ease-in-out;
     display: flex;
-    align-items: center; /* Center button text */
+    align-items: center; 
     justify-content: center;
-    height: 40px; /* Ensure consistent height */
+    height: 40px;
 }
 
 .createGoalBtn:hover {
     background-color: #e67e22;
+}
+.createGoalBtn:active {
+    transform: scale(0.96);
 }
 
 /* Mobile Menu Toggle */
@@ -80,8 +87,12 @@
     background: none;
     border: none;
     color: white;
-    font-size: 1.5rem;
+    font-size: 1.7rem;
     cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+.menuToggle:hover {
+    transform: scale(1.1);
 }
 
 /* Mobile Styles */
@@ -100,18 +111,28 @@
         align-items: center;
         padding: 1rem 0;
         display: none;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
     }
 
     .navLinks.showMenu {
         display: flex;
+        opacity: 1;
+        transform: translateY(0);
     }
 
     .navLinks li {
         margin: 0.5rem 0;
+        text-align: center;
+        
     }
 
     .createGoalBtn {
-        width: 100%; /* Full width button */
+        width: 90%;
         text-align: center;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
     }
 }

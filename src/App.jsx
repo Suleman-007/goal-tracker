@@ -2,9 +2,13 @@ import { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { FaBars } from "react-icons/fa";
 import Dashboard from './Components/Dashboard'
-import GoalProgress from './Components/GoalProgress'
 import Navbar from './Components/Navbar';
 import styles from './CSSModules/App.module.css';
+import "@fontsource/poppins"; 
+import "@fontsource/roboto";  
+import "@fontsource/lato";
+import "@fontsource/montserrat";
+
 
 function App() {
 

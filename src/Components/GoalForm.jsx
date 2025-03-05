@@ -1,5 +1,6 @@
 import  { useState, useEffect } from "react";
 import styles from "../CSSModules/GoalForm.module.css";
+import {FaTimes} from "react-icons/fa";
 import { toast } from "react-toastify"; 
 
 function GoalForm({ setGoals, closeForm, editGoal, editIndex }) {
@@ -49,7 +50,10 @@ function GoalForm({ setGoals, closeForm, editGoal, editIndex }) {
 
   return (
     <div className={styles.container}>
+      <div className={styles.header}>
       <h1>{editGoal ? "Edit Goal" : "Create New Goal"}</h1>
+      <FaTimes className={styles.closeIcon} onClick={closeForm}/>
+      </div>
       <form onSubmit={handleSubmit}>
         <div className={styles.formGroup}>
           <label>Title</label>

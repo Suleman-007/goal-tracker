@@ -3,7 +3,8 @@ import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, registerables } from "chart.js";
 ChartJS.register(...registerables); 
 import 'chartjs-adapter-date-fns';  
-import styles from '../CSSModules/Dashboard.module.css'
+import styles from '../CSSModules/GoalProgress.module.css';
+import { FaTimes } from 'react-icons/fa';
 
 function GoalProgress({ ...props}) {
   console.log("Received props in GoalProgress:", props);
@@ -58,7 +59,6 @@ const handleSubmit = (e) => {
     return;
   }
 
-  // new goal object with updated progress logs
   const updatedGoal = { ...goal, progressLogs: [ ...(goal.progressLogs || []), logEntry], };
     // Calculate new completion percentage
     const totalProgress = updatedGoal.progressLogs.reduce((acc, log) => acc + parseInt(log.amount, 10), 0);
@@ -129,16 +129,27 @@ const handleSubmit = (e) => {
       {/* Log Progress Form (Only when onlyLogForm is true) */}
     {onlyLogForm ? (
     <div className={styles.logProgressForm}>
+      <div className={styles.logProgressHeader}> 
       <h3>Log Progress for {goal.title}</h3>
+      <button className={styles.closeBtn} onClick={hideForm}>
+        <FaTimes/>
+      </button>
+      </div>
       <form onSubmit={handleSubmit}>
+        <div className={styles.formGroup}>
         <label>Date:</label>
         <input type="date" name="date" value={logEntry.date} onChange={handleChange} />
+        </div>
 
+        <div className={styles.formGroup}>
         <label>Amount:</label>
         <input type="number" name="amount" value={logEntry.amount} onChange={handleChange} required />
+        </div>
 
+        <div className={styles.formGroup}>
         <label>Note:</label>
         <input type="text" name="note" value={logEntry.note} onChange={handleChange} />
+        </div>
         <div className={styles.addLogBtnContainer}>
         <button className={styles.addLogBtn} type="Submit">Add Log</button>
         </div>
@@ -147,7 +158,12 @@ const handleSubmit = (e) => {
     ) : (
       <div>
         {/* Progress Graph & History (shown when onlyLogForm is false) */}
+        <div className={styles.progressGraphHeader}>
       <h4>Progress Graph</h4>
+      <button className={styles.closeBtn} onClick={hideForm}>
+       <FaTimes />
+     </button>
+     </div>
       {progressLogs.length > 0 ? (
          <Line data={chartData} options={chartOptions}/> 
     ) : (
