@@ -146,7 +146,7 @@ const handleSubmit = (e) => {
         <input type="number" name="amount" value={logEntry.amount} onChange={handleChange} required />
         </div>
 
-        <div className={styles.formGroup}>
+        <div className={styles.formGroupNote}>
         <label>Note:</label>
         <input type="text" name="note" value={logEntry.note} onChange={handleChange} />
         </div>

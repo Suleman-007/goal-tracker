@@ -32,6 +32,7 @@
   font-family: 'Poppins', sans-serif;
 }
 
+.formGroupNote,
 .formGroup {
     display: flex;
     flex-direction: column;
@@ -39,6 +40,10 @@
     gap: 5px;
     text-align: left;
 
+}
+
+.formGroupNote input {
+    height: 8em;
 }
 
 .closeBtn {
