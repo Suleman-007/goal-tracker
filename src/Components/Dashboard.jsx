@@ -29,6 +29,12 @@ function Dashboard({goalFormOpen, setGoalFormOpen}) {
     localStorage.setItem("goals", JSON.stringify(goals));
   }, [goals]);
 
+  useEffect(() => {
+    if(goalFormOpen) {
+      setEditGoal(null);
+    }
+  }, [goalFormOpen]);
+
   const updateGoals = (updatedGoal) => {
     setGoals((prevGoals) =>{
       if(updatedGoal.id && prevGoals.some(goal => goal.id === updatedGoal.id)){
@@ -118,18 +124,16 @@ function Dashboard({goalFormOpen, setGoalFormOpen}) {
 
       <h1>Welcome to your Goal Tracker!<GoGoal/></h1>
 
-      {/* Create New Goal Button
-      <button className={styles.createGoalBtn} onClick={() =>{ setEditGoal(null); setGoalFormOpen(true)}} >
-        <FaPlus/> Create New Goal
-      </button> */}
-
       {/*Goal Form Modal*/}
       {goalFormOpen && (
         <div className={styles.modalBackdrop}>
           <div className={styles.modalContent}>
         <GoalForm
         setGoals={setGoals}
-        closeForm={() => setGoalFormOpen(false)}
+        closeForm={() => {
+          setGoalFormOpen(false);
+          setEditGoal(null);
+        }}
         editGoal={editGoal}
         />
         </div>
@@ -175,16 +179,16 @@ function Dashboard({goalFormOpen, setGoalFormOpen}) {
             Days Remaining: {daysRemaining !== undefined ? daysRemaining : 'N/A'} days
             </div>
           </div>
-          {/*Log Progress Modal*/}
+          
+          <div className={styles.buttonGroup}>
           <button className={styles.secondaryBtn} onClick={() => setLogProgressGoal(goal)}>
             Log Progress
           </button>
 
-        
-          {/*show progress button (opens modal)*/}
           <button className={styles.primaryBtn}onClick={() => setModalGoal(goal)}>
             Show Progress
           </button>
+          </div>
 
         </div>
       );

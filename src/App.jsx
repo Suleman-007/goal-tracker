@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { FaBars } from "react-icons/fa";
 import Dashboard from './Components/Dashboard'
 import Navbar from './Components/Navbar';
 import styles from './CSSModules/App.module.css';
@@ -19,6 +18,8 @@ function App() {
   const [selectedGoal, setSelectedGoal] = useState(null); // track selected goal
 
   const [goalFormOpen, setGoalFormOpen] = useState(false);
+  const [editGoal, setEditGoal] = useState(null);
+
   useEffect(() => {
     localStorage.setItem("goals", JSON.stringify(goals));
   }, [goals]);
@@ -31,6 +32,10 @@ function App() {
       prevGoals.map((goal) => (goal.id === updatedGoal.id ? updatedGoal : goal))
   );
 
+  if(editGoal?.id === updatedGoal.id) {
+    setEditGoal(updatedGoal);
+  }
+
   if(selectedGoal?.id === updatedGoal.id){
     setSelectedGoal(updatedGoal);
   }
@@ -39,11 +44,22 @@ function App() {
   return (
     <Router>
       <div className={styles.appContainer}>
-      <Navbar onCreateGoal={() => setGoalFormOpen(true)}/>
+      <Navbar onCreateGoal={() => {
+        setGoalFormOpen(true);
+        setEditGoal(null);
+        }}/>
 
       <div className={styles.mainContent} >
      <Routes>
-       <Route path="/" element={<Dashboard goalFormOpen={goalFormOpen} setGoalFormOpen={setGoalFormOpen} goals={goals} updateGoal={updateGoal}/>}/>
+       <Route path="/" element={
+        <Dashboard 
+         goalFormOpen={goalFormOpen}
+         setGoalFormOpen={setGoalFormOpen} 
+         goals={goals} 
+         setGoals={setGoals}
+         updateGoal={updateGoal}
+         editGoal={editGoal}
+         setEditGoal={setEditGoal}/>}/>
      </Routes>
       </div>
 

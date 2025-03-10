@@ -8,11 +8,11 @@ function GoalForm({ setGoals, closeForm, editGoal, editIndex }) {
     id: null,
     title: "",
     goalType: "sessions",
-    targetAmount: "",
+    targetAmount: 1,
     completedAmount: 0,
     startDate: new Date().toISOString().split("T")[0],
     endDate: new Date(new Date().getFullYear(), 11, 31).toISOString().split("T")[0],
-    progressLogs: []
+    progressLogs: [],
   });
 
   // Populate form if editing
@@ -23,7 +23,8 @@ function GoalForm({ setGoals, closeForm, editGoal, editIndex }) {
   }, [editGoal]);
 
   const handleChange = (e) => {
-    setGoal({ ...goal, [e.target.name]: e.target.value });
+    const {name, value} = e.target;
+    setGoal({ ...goal, [name]: name === "targetAmount" ? Number(value):value, });
   };
 
   const handleSubmit = (e) => {
@@ -33,14 +34,22 @@ function GoalForm({ setGoals, closeForm, editGoal, editIndex }) {
       return;
     }
 
+    if (goal.targetAmount < 1) {
+      toast.error("Target amount must be at least 1.");
+      return;
+    }
+
+    if (new Date(goal.endDate) < new Date(goal.startDate)) {
+      toast.error("End date cannot be before the start date.");
+      return;
+    }
+
     setGoals((prevGoals) => {
       if (goal.id){
-        // update existing goal based on its ID
         toast.success("Goal updated successfully!");
         return prevGoals.map((g) => (g.id === goal.id ? goal :g));
       } else {
         toast.success("New goal created");
-        // Create a new goal and assign a unique ID
         return [...prevGoals, {...goal, id: Date.now()}];
       }
   });
@@ -51,7 +60,7 @@ function GoalForm({ setGoals, closeForm, editGoal, editIndex }) {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-      <h1>{editGoal ? "Edit Goal" : "Create New Goal"}</h1>
+      <h1>{goal.id ? "Edit Goal" : "Create New Goal"}</h1>
       <FaTimes className={styles.closeIcon} onClick={closeForm}/>
       </div>
       <form onSubmit={handleSubmit}>
@@ -83,7 +92,7 @@ function GoalForm({ setGoals, closeForm, editGoal, editIndex }) {
           <input type="date" name="endDate" value={goal.endDate} onChange={handleChange} min={goal.startDate} />
         </div>
          <div className={styles.buttonGroup}>
-        <button className={styles.saveButton} type="submit">{editGoal ? "Update Goal" : "Save Goal"}</button>
+        <button className={styles.saveButton} type="submit">{goal.id ? "Update Goal" : "Save Goal"}</button>
         <button className={styles.cancelButton} type="button" onClick={closeForm}>Cancel</button>
         </div>
       </form>

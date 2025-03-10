@@ -51,32 +51,34 @@
 }
 
 .goalCardContainer {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(400px, 1fr));
+    gap: 30px; 
+    max-width: 1100px;
+    width: 100%;
+    margin: 0 auto;
+    margin-left: 10px;
+    align-items: start;
     justify-content: center;
-    gap: 20px; 
-    max-width: 850px;
 }
 
 .goalCard {
     position: relative;
-    flex: 1 1 calc(50% - 20px);
-    min-width: 350px;
-    max-width: 400px;
     background-color: #fff;
     border-radius: 10px;
-    padding: 20px;
-    margin: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     overflow: hidden;
     align-self: flex-start;
+    max-width: 500px; 
+    width: 100%;
+    flex-direction: column;
+    box-sizing: border-box;
+    display: flex;
+    gap: 12px;
+    padding: 15px;
 }
 
-.goalCardContainer .goalCard:nth-child(2):first-child {
-    justify-content: space-between;
-}
 
 .goalCard:hover {
     transform: scale(1.025);
@@ -97,13 +99,23 @@
     margin-bottom: 8px;
 }
 
+.goalHeader,
+.buttonGroup,
 .infoContainer {
     display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    width: 100%;
+    padding: 10px 15px;
+    box-sizing: border-box;
+
+  }
+
+  .infoContainer {
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    margin-top: 12px;
-}
+  }
 
 .infoBadge {
     display: flex;
@@ -133,15 +145,6 @@
     
     background: #d4eaf8;
 }
-
-.goalHeader {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
-    padding: 5px 10px;
-}
-
 
 
 .goalTitle {
@@ -309,8 +312,27 @@
 }
 
 /* Responsiveness */
+@media (max-width: 1200px) {
+    .goalCardContainer{
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Adjusts for medium screens */
+        max-width: 1200px;
+        gap: 40px;
+    }
+    .goalCard {
+        
+        max-width: 450px;
+    }
+}
+
 @media (max-width: 768px) {
-    .goalCard{
-        flex: 1 1 100%;
+    .goalCardContainer {
+        grid-template-columns: 1fr;
+        max-width: 90%;
+        justify-content: center;
+    }
+
+    .goalCard {
+        max-width: 100%;
+        margin: 0 auto;
     }
 }

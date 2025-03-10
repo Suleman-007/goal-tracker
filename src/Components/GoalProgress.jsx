@@ -142,13 +142,17 @@ const handleSubmit = (e) => {
         </div>
 
         <div className={styles.formGroup}>
-        <label>Amount:</label>
-        <input type="number" name="amount" value={logEntry.amount} onChange={handleChange} required />
+        <label>    {goal.goalType && goal.goalType.toLowerCase() === "hours" ? "Hours Logged:" : "Sessions Completed:"}
+        </label>
+        <input type="number" name="amount" value={logEntry.amount} onChange={handleChange} 
+              placeholder={goal.goalType && goal.goalType.toLowerCase() === "hours" ? "Enter hours" : "Enter sessions"}
+              required />
         </div>
 
-        <div className={styles.formGroupNote}>
+        <div className={styles.formGroup}>
         <label>Note:</label>
-        <input type="text" name="note" value={logEntry.note} onChange={handleChange} />
+        <textarea name="note" value={logEntry.note} onChange={handleChange} 
+          rows="6" placeholder="Enter your notes here..."/>
         </div>
         <div className={styles.addLogBtnContainer}>
         <button className={styles.addLogBtn} type="Submit">Add Log</button>
