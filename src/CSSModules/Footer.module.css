@@ -1,0 +1,63 @@
+.footer {
+    background-color: #3e4a5a; /* Dark, but lighter than navbar (#2c3e50) */
+    color: #ffffff;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    font-size: 0.9rem;
+    border-top: 1px solid #2c3e50; /* Subtle separation from main content */
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .footerText {
+    margin: 0;
+    font-weight: 500;
+    color: #ffffff;
+  }
+  
+  .subText {
+    font-size: 0.8rem;
+    color: #cccccc;
+  }
+  
+  .footerLinks {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  .footerLinks a {
+    color: #dddddd;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .footerLinks a:hover {
+    color: #58a6ff;
+  }
+  
+  .githubIconLink {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: #cccccc;
+    transition: color 0.3s ease;
+  }
+  
+  .githubIconLink:hover {
+    color: #58a6ff;
+  }
+  
+  .githubIcon {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    transition: transform 0.3s ease;
+  }
+  
+  .githubIconLink:hover .githubIcon {
+    transform: scale(1.1);
+  }
+  

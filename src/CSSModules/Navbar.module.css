@@ -53,13 +53,13 @@
 
 .navLinks a:hover,
 .activeLink {
-    color: #f39c12;
+    color: #ecf0f1;
     font-weight: 600;
 }
 
 /* Create Goal Button */
 .createGoalBtn {
-    background-color: #f39c12;
+    background-color: #1976d2;
     color: white;
     border: none;
     padding: 0.5rem 1rem;
@@ -75,7 +75,7 @@
 }
 
 .createGoalBtn:hover {
-    background-color: #e67e22;
+    background-color: #1565c0;
 }
 .createGoalBtn:active {
     transform: scale(0.96);
@@ -136,3 +136,134 @@
         justify-content: center;
     }
 }
+
+.searchInput {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    margin-left: auto;
+    margin-right: 1rem;
+    max-width: 200px;
+    width: 100%;
+  }
+
+  .navRight {
+    display: flex;
+    align-items: center;
+    margin-left: auto; /* pushes this section to the right */
+    gap: 1rem;
+  }
+  
+
+  /* Reduce width on small screens */
+@media (max-width: 600px) {
+    .searchInput {
+      max-width: 120px; /* or any value you prefer */
+      font-size: 13px;
+    }
+  }
+
+  .filterToggleBtn {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: color 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 10px 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  
+  .filterToggleBtn:hover {
+    color: #f39c12;
+    font-weight: 600;
+  }
+  
+  .filterToggleBtn.activeFilter {
+    background-color: orange;
+    color: white;
+    border-color: orange;
+  }
+  
+
+/* Dropdown styles */
+.filterWrapper {
+    position: relative;
+  }
+  
+  .filterToggle {
+    background: transparent;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    padding: 0.5rem;
+  }
+  
+  .filterDropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    min-width: 180px;
+  }
+  
+  .filterCategory {
+    cursor: pointer;
+    font-weight: 600;
+    margin: 0.4rem 0;
+    padding: 0.3rem;
+    transition: background 0.2s;
+  }
+  
+  .filterCategory:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .filterSubMenu {
+    margin-left: 1rem;
+    margin-top: 0.3rem;
+  }
+  
+  .filterOption {
+    padding: 0.3rem 0.5rem;
+    cursor: pointer;
+    font-weight: 400;
+    color: #333;
+  }
+  
+  .filterOption:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .active {
+    font-weight: bold;
+    color: #1976d2;
+  }
+  
+  .clearBtn {
+    margin-top: 0.7rem;
+    background-color: #eee;
+    border: none;
+    padding: 0.4rem 0.7rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .clearBtn:hover {
+    background-color: #ddd;
+  }
+  

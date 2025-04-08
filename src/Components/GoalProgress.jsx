@@ -24,7 +24,8 @@ function GoalProgress({ ...props}) {
   });
 
  const [progressLogs, setProgressLogs] = useState(goal.progressLogs || []);
- 
+ const [showFullHistory, setShowFullHistory] = useState(false);
+
  useEffect(() => {
   setProgressLogs(goal.progressLogs || []);
  }, [goal.progressLogs]);
@@ -49,63 +50,110 @@ const handleChange = (e) => {
 
 const handleSubmit = (e) => {
   e.preventDefault();
-  if (!logEntry.amount){
-    alert("Please enter a valid amount");
+
+  const logDate = new Date(logEntry.date);
+  const today = new Date();
+  const startDate = new Date(goal.startDate);
+  const endDate = new Date(goal.endDate);
+
+  // ✅ Prevent logging before the start date
+  if (logDate < startDate) {
+    alert("You cannot log progress before the start date.");
     return;
   }
 
-  if(typeof updateGoal !== "function") {
+  // ✅ Prevent logging after the end date
+  if (logDate > endDate) {
+    alert("You cannot log progress after the goal's end date.");
+    return;
+  }
+
+  // ✅ Restrict logging to within 3 days of today
+  const daysDifference = (today - logDate) / (1000 * 60 * 60 * 24);
+  if (daysDifference > 3) {
+    alert("You can only log progress within 3 days of today.");
+    return;
+  }
+
+  // ✅ Prevent duplicate entries for the same date
+  const isDuplicate = progressLogs.some(log => log.date === logEntry.date);
+  if (isDuplicate) {
+    alert("You have already logged progress for this date!");
+    return; 
+  }
+
+  if (!logEntry.amount) {
+    alert("Please enter a valid amount.");
+    return;
+  }
+
+  if (typeof updateGoal !== "function") {
     console.error("updateGoal is not a function!", updateGoal);
     return;
   }
 
-  const updatedGoal = { ...goal, progressLogs: [ ...(goal.progressLogs || []), logEntry], };
-    // Calculate new completion percentage
-    const totalProgress = updatedGoal.progressLogs.reduce((acc, log) => acc + parseInt(log.amount, 10), 0);
-    const completionPercentage = (totalProgress / updatedGoal.targetAmount) * 100;
+  const updatedGoal = { 
+    ...goal, 
+    progressLogs: [...(goal.progressLogs || []), logEntry], 
+  };
 
-    // Calculate new days remaining
-  const today = new Date();
-  const endDate = goal.endDate ? new Date(goal.endDate) : null;
+  // ✅ Recalculate Completion Percentage
+  const totalProgress = updatedGoal.progressLogs.reduce(
+    (acc, log) => acc + parseInt(log.amount, 10), 
+    0
+  );
+  const completionPercentage = (totalProgress / updatedGoal.targetAmount) * 100;
 
+  // ✅ Recalculate Days Remaining
   let daysRemaining = "N/A";
-  if(endDate instanceof Date && !isNaN(endDate)){
-   daysRemaining = Math.max(0, Math.ceil((endDate - today) / (1000 * 60 * 60 * 24)));
+  if (!isNaN(endDate)) {
+    daysRemaining = Math.max(0, Math.ceil((endDate - today) / (1000 * 60 * 60 * 24)));
   }
 
   updateGoal(updatedGoal);
-  if(passProgressData){
+  
+  if (passProgressData) {
     passProgressData(goal.id, completionPercentage, daysRemaining);
   }
+
+  // ✅ Reset Form After Submission
   setLogEntry({
     amount: "",
     note: "",
     date: new Date().toISOString().split("T")[0],
   });
-  if (hideForm){
+
+  if (hideForm) {
     hideForm();
   }
 };
 
+
+  // Ensure logs are sorted by date
+  const sortedLogs = [...progressLogs].sort((a, b) => new Date(a.date) - new Date(b.date));
+  
  //prepare data for the chart
  let loggedAmount = 0;
  const chartData = {
-  labels: progressLogs.map((log) => log.date),
-  datasets: [
+  labels: sortedLogs.map((log) => new Date(log.date)),
+    datasets: [
     {
       label: `${goal.title} Progress`,
-      data: progressLogs.map((log) => {
+      data: sortedLogs.map((log) => {
         loggedAmount += parseInt(log.amount, 10);
         return loggedAmount;
       }),
       borderColor: "blue",
-      backgroundColor: "lightblue",
+      backgroundColor: "rgba(173, 216, 230, 0.5)",
       fill: true,
+      tension: 0.3,
     },
   ],
  };
 
  const chartOptions = {
+  responsive: true,
+    maintainAspectRatio: false,
   scales: {
     x:{
       type: 'time',
@@ -113,8 +161,8 @@ const handleSubmit = (e) => {
         unit: 'day',
       },
       ticks: {
+        min: sortedLogs.length > 0 ? new Date(sortedLogs[0].date) : new Date(goal.startDate),
         max: new Date(goal.endDate),
-        min: progressLogs.length > 0 ? new Date(progressLogs[0].date) : new Date(goal.startDate),
       },
     },
     y:{
@@ -161,27 +209,46 @@ const handleSubmit = (e) => {
       </div>
     ) : (
       <div>
-        {/* Progress Graph & History (shown when onlyLogForm is false) */}
+        {/* Progress Graph */}
+        <div className={styles.progressContainer}>
+          <div className={styles.progressGraph}>
         <div className={styles.progressGraphHeader}>
       <h4>Progress Graph</h4>
       <button className={styles.closeBtn} onClick={hideForm}>
        <FaTimes />
      </button>
      </div>
-      {progressLogs.length > 0 ? (
-         <Line data={chartData} options={chartOptions}/> 
-    ) : (
-       <p>No progress recorded yet.</p>
-       )}
+     <div className={styles.chartContainer}>
+            <Line data={chartData} options={chartOptions} />
+      </div>
+      </div>
 
-      <h4>Progress History</h4>
-      <ul>
-        {progressLogs.map((log, index) => (
-          <li key={index}>
-            {log.date}: {log.amount} {goal.goalType} - {log.note}
-          </li>
-        ))}
-      </ul>
+      <div className={styles.progressHistory}>
+       <h4>Progress History</h4>
+       <ul>
+         {progressLogs.length === 0 ? (
+            <p>No progress recorded yet.</p>
+          ) : (
+           [...progressLogs] 
+             .reverse() 
+             .slice(0, showFullHistory ? progressLogs.length : 3) // Show only 3 initially
+             .map((log, index) => (
+               <li key={index}>
+                 {log.date}: {log.amount} {goal.goalType} - {log.note}
+                </li>
+             ))
+         )}
+       </ul>
+          </div>
+{progressLogs.length > 3 && (
+  <button
+    className={styles.showMoreBtn}
+    onClick={() => setShowFullHistory(!showFullHistory)}
+  >
+    {showFullHistory ? "Show Less" : "Show More"}
+  </button>
+)}
+</div>
      </div>
     )}   
     </div>

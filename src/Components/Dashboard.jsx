@@ -1,33 +1,170 @@
 import React, { useEffect, useState } from 'react'
 import styles from '../CSSModules/Dashboard.module.css'
 import { GoGoal } from "react-icons/go";
-import {FaEdit, FaTrash, FaPlus, FaBullseye, FaChartBar, FaRegClock} from "react-icons/fa";
+import { FaArrowUp, FaArrowDown, FaEdit, FaTrash, FaBullseye, FaChartBar, FaRegClock, FaRedo, FaTimes} from "react-icons/fa";
 import GoalProgress from './GoalProgress';
 import GoalForm from './GoalForm';
+import LandingState from './LandingState';
+import OverallProgress from "./OverallProgress";
 import { ToastContainer, toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css';
 
-
-function Dashboard({goalFormOpen, setGoalFormOpen}) {
-  const [goals, setGoals] =useState([]);
+function Dashboard({goalFormOpen, setGoalFormOpen, searchQuery, recurringFilterOn, setRecurringFilterOn}) {
   const [editGoal, setEditGoal] = useState(null);
   const [modalGoal, setModalGoal] = useState(null);
   const [logProgressGoal, setLogProgressGoal] = useState(null);
   const [showAllGoals, setShowGoals] = useState(false);
   const [goalProgressData, setGoalProgressData] = useState({});
+  const [goals, setGoals] = useState(() => {
+    const storedGoals = localStorage.getItem("goals");
+    return storedGoals ? JSON.parse(storedGoals) : [];
+  });
+  const [resetDetails, setResetDetails] = useState([]); // ✅ Store reset details
+  const [showNotification, setShowNotification] = useState(false);
+  const [sortOption, setSortOption] = useState(() => localStorage.getItem("sortOption") || ""); 
+  const [sortOrder, setSortOrder] = useState(() => localStorage.getItem("sortOrder") || "asc");
 
-  // limit number of goals displayed initially
-  const displayedGoals = showAllGoals ? goals : goals.slice(0, 4);
+useEffect(() => {
+  localStorage.setItem("sortOption", sortOption);
+  localStorage.setItem("sortOrder", sortOrder);
+}, [sortOption, sortOrder]);
 
-  useEffect(() =>{
+
+
+  let sortedGoals = [...goals]; // Clone original goals
+
+if (sortOption) {
+  sortedGoals.sort((a, b) => {
+    let aValue, bValue;
+
+    switch (sortOption) {
+      case "progress":
+        aValue = goalProgressData[a.id] || 0;
+        bValue = goalProgressData[b.id] || 0;
+        break;
+
+      case "priority":
+        const priorityMap = { high: 1, medium: 2, low: 3, default: 4 };
+        aValue = priorityMap[a.priority] || 4;
+        bValue = priorityMap[b.priority] || 4;
+        break;
+
+      case "deadline":
+        aValue = new Date(a.endDate);
+        bValue = new Date(b.endDate);
+        break;
+
+      case "created":
+        aValue = a.id;
+        bValue = b.id;
+        break;
+
+      default:
+        return 0;
+    }
+
+    return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
+  });
+}
+
+let filteredGoals = [...sortedGoals];
+
+if (searchQuery.trim() !== "") {
+  filteredGoals = filteredGoals.filter((goal) =>
+    goal.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+}
+
+if (recurringFilterOn) {
+  filteredGoals = filteredGoals.filter(
+    (goal) => goal.recurringType && goal.recurringType !== "None"
+  );
+}
+
+const displayedGoals = showAllGoals ? filteredGoals : filteredGoals.slice(0, 4);
+
+  const resetRecurringGoals = () => {
+    const today = new Date();
+    let resetOccurred = false;
+    let resetInfo = [];
+
+    const updatedGoals = goals.map((goal) => {
+        if (!goal.recurringType || goal.recurringType === "None") return goal;
+
+        const endDate = new Date(goal.endDate);
+        if (today > endDate) {
+            resetOccurred = true;
+            resetInfo.push({ title: goal.title, type: goal.recurringType });
+
+            let newStartDate = new Date(today); // Reset to today
+            let newEndDate = new Date(newStartDate); // Clone newStartDate
+
+            switch (goal.recurringType) {
+                case "Daily":
+                    newEndDate.setDate(newEndDate.getDate() + 1);
+                    break;
+                case "Weekly":
+                    newEndDate.setDate(newEndDate.getDate() + 7); // ✅ This ensures it moves to the next month if needed
+                    break;
+                case "Monthly":
+                    newEndDate.setMonth(newEndDate.getMonth() + 1);
+                    break;
+                case "Yearly":
+                    newEndDate.setFullYear(newEndDate.getFullYear() + 1);
+                    break;
+                default:
+                    break;
+            }
+
+            console.log(`🔄 Resetting: ${goal.title}`);
+            console.log("📅 New Start Date:", newStartDate.toISOString().split('T')[0]);
+            console.log("📅 New End Date:", newEndDate.toISOString().split('T')[0]);
+
+            return {
+                ...goal,
+                progressLogs: [], 
+                startDate: newStartDate.toISOString().split('T')[0],
+                endDate: newEndDate.toISOString().split('T')[0], // ✅ Now correctly updates
+                lastReset: today.toISOString().split('T')[0], // ✅ Tracks last reset date
+            };
+        }
+        return goal;
+    });
+
+    if (resetOccurred) {
+        setResetDetails(resetInfo);
+        setShowNotification(true);
+
+        setTimeout(() => {
+            setShowNotification(false);
+        }, 5000);
+    }
+
+    setGoals([...updatedGoals]); // ✅ Ensure state updates correctly
+    localStorage.setItem("goals", JSON.stringify(updatedGoals));
+
+    console.log("✅ Updated Goals After Reset:", updatedGoals);
+};
+
+
+  
+  useEffect(() => {
     const savedGoals = JSON.parse(localStorage.getItem("goals")) || [];
     setGoals(savedGoals);
+  
+    setTimeout(() => {  // ✅ Ensure reset runs AFTER goals are loaded
+      resetRecurringGoals();
+    }, 100);
   }, []);
+  
 
-  // Save goals to local storage whenever they change
-  useEffect(() =>{
-    localStorage.setItem("goals", JSON.stringify(goals));
+  useEffect(() => {
+    if (goals.length > 0) {
+      console.log("Saving goals to localStorage:", goals);
+      localStorage.setItem("goals", JSON.stringify(goals));
+    }
   }, [goals]);
+  
 
   useEffect(() => {
     if(goalFormOpen) {
@@ -99,16 +236,16 @@ function Dashboard({goalFormOpen, setGoalFormOpen}) {
   };
 
   useEffect(() => {
-    const updatedCompletionPerentage = {};
+    const updatedCompletionPercentage  = {};
 
     goals.forEach((goal) => {
       
       const totalProgress = goal.progressLogs?.reduce((acc, log) => acc + parseInt(log.amount, 10), 0) || 0;
       const completionPercentage = goal.targetAmount > 0 ? (totalProgress / goal.targetAmount)*100 : 0;
-      updatedCompletionPerentage[goal.id] = completionPercentage;
+      updatedCompletionPercentage [goal.id] = completionPercentage;
     });
 
-    setGoalProgressData(updatedCompletionPerentage);
+    setGoalProgressData(updatedCompletionPercentage );
   }, [goals]);
   // update goal progress when new progress is logged
   const handleProgressData = (goalId, completionPercentage) => {
@@ -118,10 +255,31 @@ function Dashboard({goalFormOpen, setGoalFormOpen}) {
     }));
   };
 
+  const resetProgress = (goalId) => {
+    setGoals((prevGoals) =>
+      prevGoals.map((goal) =>
+        goal.id === goalId ? { ...goal, progressLogs: [] } : goal
+      )
+    );
+    toast.info("Progress reset for this recurring goal!");
+  };
+  
 
   return (
     <div className={styles.dashContainer}>
 
+     {/* ✅ Notification with singular/plural correction */}
+{showNotification && resetDetails.length > 0 && (
+  <div className={styles.notification}>
+    <strong>🔄 {resetDetails.length} {resetDetails.length === 1 ? "goal" : "goals"} reset:</strong>
+    <ul>
+      {resetDetails.map((goal, index) => (
+        <li key={index}>{goal.title} ({goal.type})</li>
+      ))}
+    </ul>
+    <button onClick={() => setShowNotification(false)}><FaTimes/></button>
+  </div>
+)}
       <h1>Welcome to your Goal Tracker!<GoGoal/></h1>
 
       {/*Goal Form Modal*/}
@@ -130,6 +288,7 @@ function Dashboard({goalFormOpen, setGoalFormOpen}) {
           <div className={styles.modalContent}>
         <GoalForm
         setGoals={setGoals}
+        goals={goals}
         closeForm={() => {
           setGoalFormOpen(false);
           setEditGoal(null);
@@ -139,63 +298,149 @@ function Dashboard({goalFormOpen, setGoalFormOpen}) {
         </div>
         </div>
       )}
+       {/* <OverallProgress goals={goals} /> */}
 
-    {/*Display Goals*/}
-    <div>
-    <h2>Your Goals</h2>
-    <p>You have <strong>{goals.length}</strong> goals.</p>
-    {goals.length === 0 ? (
-      <p>No Goals yet!</p>
-    ) : (
-      <div className={styles.goalCardContainer}>
-      { displayedGoals.map((goal) => {
-        // Get completion percentage from state
+  {/* Display Goals */}
+<div>
+  {goals.length > 0 && (
+    <>
+      <h2>Your Goals</h2>
+      <div className={styles.goalMeta}>
+        <p>You have <strong>{goals.length}</strong> goals.</p>
+        <div className={styles.sortControls}>
+          <label>Sort By:</label>
+          <select
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+            className={styles.sortDropdown}
+          >
+            <option value="">None</option>
+            <option value="progress">Progress</option>
+            <option value="priority">Priority</option>
+            <option value="deadline">Deadline</option>
+            <option value="created">Date Created</option>
+          </select>
+
+          {/* Toggle Asc/Desc Order */}
+          <button
+            onClick={() => setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))}
+            className={styles.sortOrderToggle}
+            title={`Sort ${sortOrder === "asc" ? "Descending" : "Ascending"}`}
+          >
+            {sortOrder === "asc" ? <FaArrowDown /> : <FaArrowUp />}
+          </button>
+        </div>
+      </div>
+    </>
+  )}
+
+  {goals.length === 0 && !goalFormOpen ? (
+    <LandingState setGoalFormOpen={setGoalFormOpen} />
+  ) : (
+    <div className={styles.goalCardContainer}>
+      {displayedGoals.map((goal) => {
         const completionPercentage = goalProgressData[goal.id] || 0;
         const daysRemaining = calculateDaysRemaining(goal);
 
         return (
-        <div key={goal.id} className={styles.goalCard}>
-          <div className={styles.goalHeader}>
-          <h3 className={styles.goalTitle}>{goal.title}</h3>
-          <div className={styles.actionIcons}>
-          <FaEdit className={styles.editIcon} onClick={() => {setEditGoal(goal); setGoalFormOpen(true); }}/>
-          <FaTrash className={styles.deleteIcon} onClick={() => deleteGoal(goal.id)}/>
-          </div>
-          </div>
-          
-          <div className={styles.infoContainer}>
-            <div className={`${styles.infoBadge} ${styles.targetBadge}`}>
-            <FaBullseye/>
-            <span>Target {goal.goalType === 'sessions' ? 'Sessions' : 'Hours'}: {goal.targetAmount}</span>
+          <div
+            key={goal.id}
+            className={`${styles.goalCard} ${
+              goal.priority === "high" ? styles.highPriority : styles.defaultPriority
+            }`}
+          >
+            {/* 🔥 High Priority Badge */}
+            {goal.priority === "high" && (
+              <span className={styles.priorityBadge}>🔥 High Priority</span>
+            )}
+
+            <div className={styles.goalHeader}>
+              {/* Left Section: Title + Recurring Icon */}
+              <h3
+                className={`${styles.goalTitle} ${
+                  goal.recurringType && goal.recurringType !== ""
+                    ? styles.recurringTitle
+                    : ""
+                }`}
+                title={goal.title}
+              >
+                {goal.title.length > 20
+                  ? `${goal.title.substring(0, 20)}...`
+                  : goal.title}
+              </h3>
+
+              {/* Right Section: Actions */}
+              <div className={styles.actionIcons}>
+                {goal.recurringType && (
+                  <FaRedo
+                    className={styles.resetIcon}
+                    title={`Reset Progress (${goal.recurringType})`}
+                    onClick={() => resetProgress(goal.id)}
+                  />
+                )}
+                <FaEdit
+                  className={styles.editIcon}
+                  onClick={() => {
+                    setEditGoal(goal);
+                    setGoalFormOpen(true);
+                  }}
+                />
+                <FaTrash
+                  className={styles.deleteIcon}
+                  onClick={() => deleteGoal(goal.id)}
+                />
+              </div>
             </div>
 
-          <div className={`${ styles.infoBadge} ${styles.progressBadge}`}>
-            <FaChartBar/>
-            Progress: {completionPercentage !== undefined ? completionPercentage.toFixed(1) : 'N/A'}%
+            {/* Goal Info */}
+            <div className={styles.infoContainer}>
+              <div className={`${styles.infoBadge} ${styles.targetBadge}`}>
+                <FaBullseye />
+                <span>
+                  Target {goal.goalType === "sessions" ? "Sessions" : "Hours"}:{" "}
+                  {goal.targetAmount}
+                </span>
+              </div>
+
+              <div className={`${styles.infoBadge} ${styles.progressBadge}`}>
+                <FaChartBar />
+                Progress:{" "}
+                {completionPercentage !== undefined
+                  ? completionPercentage.toFixed(1)
+                  : "N/A"}
+                %
+              </div>
+
+              <div className={`${styles.infoBadge} ${styles.daysBadge}`}>
+                <FaRegClock />
+                Days Remaining:{" "}
+                {daysRemaining !== undefined ? daysRemaining : "N/A"} days
+              </div>
             </div>
 
-          <div className={`${styles.infoBadge} ${styles.daysBadge}`}>
-            <FaRegClock/>
-            Days Remaining: {daysRemaining !== undefined ? daysRemaining : 'N/A'} days
+            {/* Buttons */}
+            <div className={styles.buttonGroup}>
+              <button
+                className={styles.secondaryBtn}
+                onClick={() => setLogProgressGoal(goal)}
+              >
+                Log Progress
+              </button>
+
+              <button
+                className={styles.primaryBtn}
+                onClick={() => setModalGoal(goal)}
+              >
+                Show Progress
+              </button>
             </div>
           </div>
-          
-          <div className={styles.buttonGroup}>
-          <button className={styles.secondaryBtn} onClick={() => setLogProgressGoal(goal)}>
-            Log Progress
-          </button>
-
-          <button className={styles.primaryBtn}onClick={() => setModalGoal(goal)}>
-            Show Progress
-          </button>
-          </div>
-
-        </div>
-      );
-    })}
-    </div> /*End of goalCardsContainer*/
-  )}
+        );
+      })}
     </div>
+  )}
+</div>
+
 
       {/*Show More Button*/}
       {goals.length > 4 && (
@@ -234,8 +479,9 @@ function Dashboard({goalFormOpen, setGoalFormOpen}) {
       <div className={styles.guideBar}>
       <p> Use the Navbar to:</p>
         <ul>
-          <li>Create new goals</li>
-          <li>View and track your existing goals</li>
+        <li>Add a new goal with the <strong>“Create Goal”</strong> button</li>
+    <li>Switch between <strong>all goals</strong> and <strong>recurring goals</strong></li>
+    <li>Track your goals on the main dashboard</li>
         </ul>
       </div>
 

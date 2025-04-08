@@ -1,15 +1,157 @@
-.container{
+.container {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     padding: 20px;
     max-width: none;
-    margin:0 auto;
-    background-color: #f9f9f9; /*light grey*/
+    margin: 0 auto;
+    background-color: #f9f9f9;
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ Consistent Label Styles */
+label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+/* ✅ Title & Priority Alignment */
+.titleRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+/* ✅ Priority Toggle Label */
+.priorityLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* ✅ Priority Toggle Styles */
+.priorityLabel input {
+    display: none;
+}
+
+.toggleSlider {
+    width: 40px;
+    height: 20px;
+    background-color: #ccc;
+    border-radius: 10px;
+    position: relative;
+    transition: background-color 0.3s;
+}
+
+.toggleSlider::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background-color: white;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s;
+}
+
+/* ✅ Active (Checked) State */
+.priorityLabel input:checked + .toggleSlider {
+    background-color: #f50303;
+}
+
+.priorityLabel input:checked + .toggleSlider::after {
+    transform: translateX(20px);
+}
+
+/* ✅ Recurring & Goal Options Row */
+.goalOptionsRow {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: flex-start;
     
+}
+
+.recurringInlineGroup {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Align items in one line */
+    gap: 8px; /* Add spacing between the label-tooltip group and the button */
+  }
+
+.recurringLabel {
+    display: flex;
+    align-items: center; /* Align text and icon horizontally */
+    margin-bottom: 2px; /* Space between label and tooltip */
+    flex-grow: 1;
+  }
+
+  .toggleButton {
+    margin-left: auto; /* Pushes button to the right */
+    cursor: pointer;
+    background: #f3f3f3;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background 0.2s ease-in-out;
+    align-items: center;
+
+}
+  
+/* ✅ Hover Effect - Show Tooltip Style Message */
+.toggleButton:hover {
+    background: #e0e0e0;
+}
+
+/* ✅ Hover Message (No Layout Shift) */
+.hoverWrapper {
+    position: relative;  /* Wrapper keeps layout stable */
+    display: inline-block;
+}
+
+.hoverMessage {
+    display: none;
+    position: absolute;
+    bottom: 120%;  /* Moves it above the button */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    color: #333;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #333;
+    white-space: nowrap;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+/* ✅ Show Message on Hover */
+.hoverWrapper:hover .hoverMessage {
+    display: block;
+    opacity: 1;
+}
+  .recurringDropdown {
+    width: 100%;
+    margin-top: 3px; /* Adds space below inline elements */
+    margin-bottom: 12px;
+  }
+
+/* ✅ Tooltip */
+.tooltip {
+    font-size: 14px;
+    cursor: help;
+    color: gray;
 }
 
 .header {
@@ -18,7 +160,6 @@
     align-items: center;
     width: 100%;
     padding-bottom: 10px;
-   
 }
 
 .closeIcon {
@@ -35,48 +176,41 @@
 input, select {
     padding: 10px;
     font-size: 14px;
-    border: 1px solid #ccc; /*light grey*/
+    border: 1px solid #ccc;
     border-radius: 5px;
     outline: none;
     width: 25vw !important;
-    max-width: 100% ;
+    max-width: 100%;
     height: 42px;
     box-sizing: border-box;
     
 }
 
-input:focus, select:focus{
-    border-color: #007bff;/*blue */
-    box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);/* Soft Gloe Effect*/
+input:focus, select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);
 }
 
 select {
     cursor: pointer;
 }
 
-h1{
+h1 {
     font-size: 32px;
     font-weight: bold;
-    color: #333; /*dark grey*/
+    color: #333;
     margin-bottom: 20px;
     text-align: left;
     font-family: 'Roboto', sans-serif;
     width: 100%;
 }
 
-.formGroup{
+.formGroup {
     display: flex;
     flex-direction: column;
     margin-bottom: 12px;
     width: 100%;
     max-width: none;
-
-}
-
-label{
-    font-size: 16px;
-    color: #555;/*medium grey*/
-    margin-bottom: 5px;
     text-align: left;
 }
 
@@ -88,7 +222,7 @@ label{
 }
 
 .saveButton, .cancelButton {
-    flex: 1; /* Makes both buttons take equal width */
+    flex: 1;
     padding: 12px 10px;
     font-size: 14px;
     font-weight: bold;
@@ -127,5 +261,4 @@ label{
     input, select {
         width: 75vw !important;
     }
-    
 }

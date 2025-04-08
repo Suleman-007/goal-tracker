@@ -1,0 +1,171 @@
+.container {
+    text-align: center;
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .image {
+    width: 160px;
+    margin-bottom: 1.5rem;
+    opacity: 0.95;
+  }
+  
+  .heading {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #222;
+  }
+  
+  .subtext {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+  
+  .examples {
+    margin-bottom: 2rem;
+  }
+  
+  .examplesHeading {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .cardGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+  
+  .goalCard {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    padding: 1.2rem 1rem;
+    border-radius: 12px;
+    width: 260px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    position: relative;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease;
+  }
+  
+  .goalCard:hover {
+    transform: translateY(-3px);
+  }
+  
+  .headerRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .recurringGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background-color: #f0f0f0;
+    padding: 0.3rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+  }
+  
+  .iconGroup {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #555;
+    cursor: pointer;
+  }
+  
+  .goalTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0.5rem 0 1rem 0;
+    color: #222;
+  }
+  
+  .infoContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+  }
+  
+  .infoBadge {
+    font-size: 0.9rem;
+    color: #444;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #f7f7f7;
+    padding: 0.4rem 0.6rem;
+    border-radius: 8px;
+    width: fit-content;
+  }
+  
+  .buttonGroup {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  
+  .primaryBtn,
+  .secondaryBtn {
+    flex: 1;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .primaryBtn {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  .primaryBtn:hover {
+    background-color: #0056b3;
+  }
+  
+  .secondaryBtn {
+    background-color: #e0e0e0;
+    color: #333;
+  }
+  
+  .secondaryBtn:hover {
+    background-color: #ccc;
+  }
+  
+  .button {
+    background-color: #007bff;
+    color: white;
+    padding: 0.7rem 1.2rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.3s ease;
+    margin-top: 2rem;
+  }
+  
+  .button:hover {
+    background-color: #0056b3;
+  }
+  
